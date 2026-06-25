@@ -21,6 +21,8 @@ type CatalogEntry = {
 const WIDGET_CATALOG: CatalogEntry[] = [
   { type: 'clock',                  label: 'Clock',                        desc: 'Live date and time',                                                      defaultSize: { w: 3, h: 2 } },
   { type: 'welcome',                label: 'Welcome',                      desc: 'Getting started card',                                                     defaultSize: { w: 4, h: 3 } },
+  { type: 'system-stats',           label: 'System — Stats',               desc: 'CPU, RAM, disk, temp and uptime of the host running Raspidash',            defaultSize: { w: 4, h: 5 } },
+  { type: 'system-network',         label: 'System — Network',             desc: 'All network interfaces and IP addresses of the host',                      defaultSize: { w: 4, h: 4 } },
   { type: 'proxmox-summary',        label: 'Proxmox — Node Summary',       desc: 'CPU & RAM per node',           needsIntegration: 'proxmox',               defaultSize: { w: 4, h: 4 }, supportsDisplayType: true },
   { type: 'proxmox-vms',            label: 'Proxmox — VM/CT List',         desc: 'All VMs and containers',       needsIntegration: 'proxmox',               defaultSize: { w: 6, h: 5 } },
   { type: 'truenas-summary',        label: 'TrueNAS — Pool Summary',       desc: 'Storage pool usage',           needsIntegration: 'truenas',               defaultSize: { w: 4, h: 4 }, supportsDisplayType: true },
