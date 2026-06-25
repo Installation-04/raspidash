@@ -30,6 +30,7 @@ import { LidarrWidget } from './widgets/LidarrWidget';
 import { BazarrWidget } from './widgets/BazarrWidget';
 import { CockpitWidget } from './widgets/CockpitWidget';
 import { SNMPWidget } from './widgets/SNMPWidget';
+import { SystemStatsWidget, SystemNetworkWidget } from './widgets/SystemWidget';
 
 interface Props {
   widget: WidgetConfig;
@@ -74,6 +75,8 @@ export function WidgetRenderer({ widget, integrations }: Props) {
     case 'bazarr-summary':         return <BazarrWidget widget={widget} />;
     case 'cockpit-summary':        return <CockpitWidget widget={widget} />;
     case 'snmp-summary':           return <SNMPWidget widget={widget} />;
+    case 'system-stats':           return <SystemStatsWidget />;
+    case 'system-network':         return <SystemNetworkWidget />;
     default:                       return <Missing type={widget.type} />;
   }
 }

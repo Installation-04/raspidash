@@ -61,6 +61,8 @@ export type WidgetType =
   | 'bazarr-summary'
   | 'cockpit-summary'
   | 'snmp-summary'
+  | 'system-stats'
+  | 'system-network'
   | 'clock'
   | 'welcome';
 

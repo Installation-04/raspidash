@@ -30,6 +30,7 @@ import { lidarrRouter } from './routes/lidarr.js';
 import { bazarrRouter } from './routes/bazarr.js';
 import { cockpitRouter } from './routes/cockpit.js';
 import { snmpRouter } from './routes/snmp.js';
+import { systemRouter } from './routes/system.js';
 import { startPolling } from './services/poller.js';
 
 const app = express();
@@ -67,6 +68,7 @@ app.use('/api/lidarr', lidarrRouter);
 app.use('/api/bazarr', bazarrRouter);
 app.use('/api/cockpit', cockpitRouter);
 app.use('/api/snmp', snmpRouter);
+app.use('/api/system', systemRouter);
 
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
 

@@ -45,11 +45,11 @@ export const api = {
     a.click();
     URL.revokeObjectURL(a.href);
   }),
-  restore: (data: unknown) => post('/settings/restore', data),
-  addIntegration: (data: any) => post('/settings/integrations', data),
-  updateIntegration: (id: string, data: any) => put(`/settings/integrations/${id}`, data),
+  restore: (data: unknown) => post<any>('/settings/restore', data),
+  addIntegration: (data: any) => post<any>('/settings/integrations', data),
+  updateIntegration: (id: string, data: any) => put<any>(`/settings/integrations/${id}`, data),
   deleteIntegration: (id: string) => del(`/settings/integrations/${id}`),
-  addWidget: (data: any) => post('/settings/widgets', data),
+  addWidget: (data: any) => post<any>('/settings/widgets', data),
   deleteWidget: (id: string) => del(`/settings/widgets/${id}`),
   saveTheme: (themeId: string) => put('/settings/theme', { themeId }),
   saveColors: (customColors: Record<string, string>) => put('/settings/colors', { customColors }),
@@ -139,5 +139,8 @@ export const api = {
   },
   snmp: {
     summary: (id: string) => get<any>(`/snmp/${id}/summary`),
+  },
+  system: {
+    summary: () => get<any>('/system/summary'),
   },
 };
