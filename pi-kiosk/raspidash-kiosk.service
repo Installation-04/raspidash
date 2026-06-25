@@ -1,0 +1,16 @@
+[Unit]
+Description=Raspidash Kiosk
+After=graphical.target network-online.target
+Wants=network-online.target
+
+[Service]
+User=pi
+Environment=DISPLAY=:0
+Environment=XAUTHORITY=/home/pi/.Xauthority
+Environment=RASPIDASH_URL=http://localhost:3000
+ExecStart=/home/pi/raspidash/pi-kiosk/kiosk.sh
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=graphical.target
