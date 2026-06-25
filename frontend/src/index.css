@@ -1,0 +1,162 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── CSS custom properties (overridden at runtime by ThemeProvider) ─── */
+:root {
+  --color-bg:          26 26 46;
+  --color-bg-card:     22 33 62;
+  --color-bg-border:   15 52 96;
+  --color-accent:      233 69 96;
+  --color-blue:        76 201 240;
+  --color-green:       74 222 128;
+  --color-yellow:      250 204 21;
+  --color-red:         248 113 113;
+  --color-text:        255 255 255;
+  --color-text-muted:  156 163 175;
+  /* General settings */
+  --widget-radius:     8px;
+  --widget-gap:        10px;
+  --glass-blur:        12px;
+  --glass-alpha:       0.82;
+  --animation-duration: 0.25s;
+  --font-family:       'Inter', system-ui, sans-serif;
+}
+
+/* ── Base ─────────────────────────────────────────────────────────────── */
+* { box-sizing: border-box; }
+
+body {
+  font-family: var(--font-family, 'Inter', system-ui, sans-serif);
+  background-color: rgb(var(--color-bg));
+  color: rgb(var(--color-text));
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Shared input style ───────────────────────────────────────────────── */
+.input {
+  @apply w-full rounded-lg px-3 py-2 text-sm focus:outline-none transition-colors;
+  background: rgb(var(--color-bg));
+  border: 1px solid rgb(var(--color-bg-border));
+  color: rgb(var(--color-text));
+}
+.input:focus { border-color: rgb(var(--color-accent)); box-shadow: 0 0 0 3px rgb(var(--color-accent) / 0.12); }
+
+/* ── Dashboard backgrounds ────────────────────────────────────────────── */
+.dashboard-bg {
+  background-image: radial-gradient(rgb(var(--color-bg-border) / 0.35) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+[data-bg="grid"] .dashboard-bg {
+  background-image:
+    linear-gradient(rgb(var(--color-bg-border) / 0.18) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--color-bg-border) / 0.18) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+[data-bg="none"] .dashboard-bg {
+  background-image: none;
+}
+
+/* ── Compact mode ─────────────────────────────────────────────────────── */
+.compact .widget-card { padding: 0.5rem !important; }
+
+/* ── Pi Display modes ─────────────────────────────────────────────────── */
+.touch-mode .drag-handle { min-height: 44px; }
+.touch-mode button { min-height: 36px; min-width: 36px; }
+
+.hide-scrollbars * { scrollbar-width: none !important; }
+.hide-scrollbars *::-webkit-scrollbar { display: none !important; }
+
+.cursor-hidden, .cursor-hidden * { cursor: none !important; }
+
+.high-contrast .widget-card {
+  border-color: rgb(var(--color-text) / 0.5) !important;
+  box-shadow: 0 0 0 1px rgb(var(--color-text) / 0.2) !important;
+}
+.high-contrast .text-tx-muted { color: rgb(var(--color-text) / 0.75) !important; }
+
+/* ── Glass card ──────────────────────────────────────────────────────── */
+.glass {
+  background: rgb(var(--color-bg-card) / 0.75);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid rgb(var(--color-bg-border) / 0.6);
+}
+
+/* ── Widget card ─────────────────────────────────────────────────────── */
+.widget-card {
+  position: relative;
+  border-radius: var(--widget-radius, 8px);
+  overflow: hidden;
+  background: rgb(var(--color-bg-card) / var(--glass-alpha, 0.82));
+  backdrop-filter: blur(var(--glass-blur, 12px));
+  -webkit-backdrop-filter: blur(var(--glass-blur, 12px));
+  border: 1px solid rgba(255,255,255,0.07);
+  transition: border-color 0.18s, box-shadow 0.18s;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.35), 0 1px 0 rgba(255,255,255,0.04) inset;
+}
+.widget-card:hover {
+  border-color: rgba(255,255,255,0.13);
+  box-shadow: 0 6px 28px rgba(0,0,0,0.45), 0 1px 0 rgba(255,255,255,0.06) inset;
+}
+
+/* ── Drag handle ─────────────────────────────────────────────────────── */
+.drag-handle { cursor: grab; user-select: none; }
+.drag-handle:active { cursor: grabbing; }
+
+/* ── react-grid-layout overrides ─────────────────────────────────────── */
+.react-grid-item.react-grid-placeholder {
+  background: rgb(var(--color-accent) / 0.10);
+  border-radius: var(--widget-radius, 8px);
+  border: 2px dashed rgb(var(--color-accent) / 0.4);
+  box-shadow: none !important;
+}
+.react-resizable-handle { opacity: 0; transition: opacity 0.15s; }
+.react-grid-item:hover .react-resizable-handle { opacity: 1; }
+.react-resizable-handle::after { border-color: rgb(var(--color-accent)) !important; }
+
+/* ── Scrollbar ───────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgb(var(--color-bg-border)); border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: rgb(var(--color-accent) / 0.6); }
+
+/* ── Animations ──────────────────────────────────────────────────────── */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.85); }
+}
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position:  400px 0; }
+}
+
+.animate-fade-in  { animation: fade-in var(--animation-duration, 0.35s) ease both; }
+.pulse-dot        { animation: pulse-dot 2s ease-in-out infinite; }
+
+/* ── Skeleton loader ─────────────────────────────────────────────────── */
+.skeleton {
+  border-radius: 0.5rem;
+  background: linear-gradient(
+    90deg,
+    rgb(var(--color-bg-border) / 0.4) 25%,
+    rgb(var(--color-bg-border) / 0.8) 50%,
+    rgb(var(--color-bg-border) / 0.4) 75%
+  );
+  background-size: 400px 100%;
+  animation: shimmer 1.4s ease infinite;
+}
+
+/* ── Monospace font ──────────────────────────────────────────────────── */
+.font-mono { font-family: 'JetBrains Mono', 'Fira Code', monospace; }
+
+/* ── Status badge ────────────────────────────────────────────────────── */
+.badge-green  { @apply px-2 py-0.5 rounded-full text-xs font-medium; background: rgb(var(--color-green) / 0.15); color: rgb(var(--color-green)); }
+.badge-red    { @apply px-2 py-0.5 rounded-full text-xs font-medium; background: rgb(var(--color-red) / 0.15);   color: rgb(var(--color-red)); }
+.badge-yellow { @apply px-2 py-0.5 rounded-full text-xs font-medium; background: rgb(var(--color-yellow) / 0.15); color: rgb(var(--color-yellow)); }
+.badge-blue   { @apply px-2 py-0.5 rounded-full text-xs font-medium; background: rgb(var(--color-blue) / 0.15);  color: rgb(var(--color-blue)); }
