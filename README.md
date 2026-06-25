@@ -11,7 +11,8 @@ A self-hosted, Docker-based homelab dashboard built for Raspberry Pi with a conn
 ## Features
 
 - **Drag-and-drop grid layout** — freely resize and reposition widgets
-- **26 integrations** — from Proxmox and TrueNAS to Sonarr, Plex, SNMP devices and more
+- **27 integrations** — from Proxmox and TrueNAS to Sonarr, Plex, SNMP devices and more
+- **Host system widgets** — CPU, RAM, disk, temperature, uptime and network interfaces of the Raspidash host
 - **Live WebSocket updates** — push + configurable polling interval
 - **11 themes** — Dark, Synthwave, Midnight, Dracula, Catppuccin, Nord, Tokyo Night, Gruvbox, AMOLED, Solarized, Light
 - **Pi Display Presets** — one-click optimize for 7", 10", HyperPixel, rack screens, and more
@@ -41,13 +42,14 @@ A self-hosted, Docker-based homelab dashboard built for Raspberry Pi with a conn
 | **Reverse Proxy** | Nginx Proxy Manager |
 | **Cloud** | Nextcloud |
 | **System** | Cockpit |
+| **Host** | System Stats (CPU/RAM/disk/temp), System Network (interfaces & IPs) |
 
 ---
 
 ## Quick Start (Docker)
 
 ```bash
-git clone https://github.com/Marco472/raspidash.git
+git clone https://github.com/Installation-04/raspidash.git
 cd raspidash
 docker compose up -d
 ```
