@@ -561,6 +561,44 @@ export function GeneralTab({ config, onChange }: Props) {
         </Row>
       </Section>
 
+      {/* Backup & Restore */}
+      <Section title="Backup & Restore">
+        <div className="text-xs mb-3" style={{ color: 'rgb(var(--color-text-muted))' }}>
+          Backup saves your full config including integrations and credentials. Keep it safe.
+        </div>
+        <div className="flex gap-2">
+          <button
+            onClick={() => api.backup().catch(e => alert('Backup failed: ' + e.message))}
+            className="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-medium rounded-xl transition-all"
+            style={{ background: 'rgb(var(--color-accent) / 0.15)', border: '1px solid rgb(var(--color-accent) / 0.4)', color: 'rgb(var(--color-accent))' }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgb(var(--color-accent) / 0.25)'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgb(var(--color-accent) / 0.15)'; }}>
+            ⬇ Download Backup
+          </button>
+          <label
+            className="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-medium rounded-xl transition-all cursor-pointer"
+            style={{ background: 'rgb(var(--color-bg-border) / 0.3)', border: '1px solid rgb(var(--color-bg-border))', color: 'rgb(var(--color-text-muted))' }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'rgb(var(--color-text))'; (e.currentTarget as HTMLElement).style.borderColor = 'rgb(var(--color-accent) / 0.4)'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'rgb(var(--color-text-muted))'; (e.currentTarget as HTMLElement).style.borderColor = 'rgb(var(--color-bg-border))'; }}>
+            ⬆ Restore Backup
+            <input type="file" accept=".json" className="hidden" onChange={async (e) => {
+              const file = e.target.files?.[0];
+              if (!file) return;
+              try {
+                const text = await file.text();
+                const data = JSON.parse(text);
+                if (!confirm(`Restore backup? This will replace ALL current settings, ${data.integrations?.length ?? 0} integrations and ${data.widgets?.length ?? 0} widgets.`)) return;
+                await api.restore(data);
+                window.location.reload();
+              } catch (err: any) {
+                alert('Restore failed: ' + err.message);
+              }
+              e.target.value = '';
+            }} />
+          </label>
+        </div>
+      </Section>
+
       {/* About */}
       <Section title="About">
         <div className="rounded-xl px-3 py-3 flex items-center gap-3"

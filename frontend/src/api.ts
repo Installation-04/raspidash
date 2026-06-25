@@ -35,6 +35,17 @@ async function del(path: string) {
 export const api = {
   getConfig: () => get<any>('/settings'),
   saveLayout: (widgets: any[]) => put('/settings/layout', { widgets }),
+  backup: () => fetch('/api/settings/backup').then(async r => {
+    const cd = r.headers.get('content-disposition') ?? '';
+    const name = cd.match(/filename="([^"]+)"/)?.[1] ?? 'raspidash-backup.json';
+    const blob = await r.blob();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }),
+  restore: (data: unknown) => post('/settings/restore', data),
   addIntegration: (data: any) => post('/settings/integrations', data),
   updateIntegration: (id: string, data: any) => put(`/settings/integrations/${id}`, data),
   deleteIntegration: (id: string) => del(`/settings/integrations/${id}`),
