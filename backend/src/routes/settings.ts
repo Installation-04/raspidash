@@ -105,3 +105,22 @@ settingsRouter.delete('/widgets/:id', (req, res) => {
   saveConfig(config);
   res.json({ ok: true });
 });
+
+// Backup — full config as downloadable JSON (includes credentials)
+settingsRouter.get('/backup', (_req, res) => {
+  const config = loadConfig();
+  const timestamp = new Date().toISOString().slice(0, 19).replace(/[T:]/g, '-');
+  res.setHeader('Content-Type', 'application/json');
+  res.setHeader('Content-Disposition', `attachment; filename="raspidash-backup-${timestamp}.json"`);
+  res.json(config);
+});
+
+// Restore — replace entire config from uploaded JSON
+settingsRouter.post('/restore', (req, res) => {
+  const body = req.body;
+  if (!body || typeof body !== 'object' || !Array.isArray(body.integrations) || !Array.isArray(body.widgets)) {
+    return res.status(400).json({ error: 'Invalid backup file — missing integrations or widgets arrays' });
+  }
+  saveConfig(body);
+  res.json({ ok: true, integrations: body.integrations.length, widgets: body.widgets.length });
+});
