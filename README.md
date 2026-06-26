@@ -20,6 +20,7 @@ A self-hosted, Docker-based homelab dashboard built for Raspberry Pi with a conn
 - **Glassmorphism cards** — tunable blur, opacity, radius, gap
 - **Backup & Restore** — download/upload your full config as JSON
 - **Kiosk mode** — boots straight to dashboard on Pi startup
+- **One-line installer** — installs Docker, clones repo, starts stack and kiosk automatically
 
 ---
 
@@ -55,10 +56,24 @@ curl -fsSL https://raw.githubusercontent.com/Installation-04/raspidash/main/inst
 ```
 
 The script will:
-- Install Docker if not present
-- Clone the repo
+- Install Docker and Docker Compose if not present
+- Clone the repo to `~/raspidash`
 - Build and start the Docker stack
+- Run a health check and print your dashboard URL
 - Optionally set up the Pi kiosk (auto-launch Chromium on boot)
+
+You can override defaults with environment variables before running:
+
+```bash
+RASPIDASH_PORT=8080 RASPIDASH_DIR=/opt/raspidash \
+  curl -fsSL https://raw.githubusercontent.com/Installation-04/raspidash/main/install.sh | bash
+```
+
+| Variable | Default | Description |
+|---|---|---|
+| `RASPIDASH_DIR` | `~/raspidash` | Where to clone the repo |
+| `RASPIDASH_PORT` | `7531` | Frontend port |
+| `RASPIDASH_BACKEND_PORT` | `7532` | Backend API port |
 
 ### Manual install
 
@@ -70,6 +85,8 @@ docker compose up -d
 
 Open **http://localhost:7531** in your browser.
 
+### First steps
+
 1. Click the **⚙ Settings** icon → **Integrations** → **Add integration**
 2. Pick your service type — the form adapts to show only the fields that service needs
 3. Click **Edit Layout** → **Add Widget** to place widgets on the dashboard
@@ -77,17 +94,37 @@ Open **http://localhost:7531** in your browser.
 
 ---
 
-## Pi Kiosk Setup
-
-After Docker Compose is running on your Pi:
+## Update
 
 ```bash
-bash pi-kiosk/install.sh
-sudo systemctl start raspidash-kiosk
+cd ~/raspidash
+git pull origin main
+docker compose up -d --build
+```
+
+---
+
+## Uninstall
+
+```bash
+bash ~/raspidash/pi-kiosk/uninstall.sh
+```
+
+The uninstall script lets you choose what to remove: kiosk service, Docker containers and images, saved config data, and the project folder.
+
+---
+
+## Pi Kiosk Setup
+
+The one-line installer offers to set up the kiosk automatically. To set it up manually after install:
+
+```bash
+bash ~/raspidash/pi-kiosk/install.sh
+sudo reboot
 ```
 
 On next boot the Pi opens Chromium in full-screen kiosk mode pointed at the dashboard.  
-Use the **General → Pi Display Presets** in Settings to optimize the layout for your screen size.
+Use **Settings → General → Pi Display Presets** to optimize the layout for your screen size.
 
 ### Supported Pi Screens
 
@@ -174,34 +211,37 @@ The frontend dev server proxies `/api/*` to `localhost:7532`.
 
 ```
 raspidash/
+├── install.sh                    # One-line full installer
 ├── backend/
 │   ├── src/
-│   │   ├── index.ts          # Express app + WebSocket server
-│   │   ├── store.ts          # JSON config persistence
-│   │   ├── routes/           # One file per integration + settings
-│   │   └── services/         # Fetch helpers per service
+│   │   ├── index.ts              # Express app + WebSocket server
+│   │   ├── store.ts              # JSON config persistence
+│   │   ├── routes/               # One file per integration + settings
+│   │   └── services/             # Fetch helpers per service
 │   └── Dockerfile
 ├── frontend/
 │   ├── src/
-│   │   ├── App.tsx           # Root layout + navbar + background
+│   │   ├── App.tsx               # Root layout + navbar + background
 │   │   ├── components/
-│   │   │   ├── Dashboard.tsx        # Grid layout engine
-│   │   │   ├── WidgetShell.tsx      # Card wrapper (icon, status, ping)
-│   │   │   ├── WidgetRenderer.tsx   # Routes widget type → component
-│   │   │   ├── ServiceStatRow.tsx   # Bottom stat bar on cards
-│   │   │   ├── SettingsPanel.tsx    # Slide-in settings panel
-│   │   │   ├── AddWidgetModal.tsx   # Widget catalog
-│   │   │   └── widgets/             # One file per widget
+│   │   │   ├── Dashboard.tsx     # Grid layout engine
+│   │   │   ├── WidgetShell.tsx   # Card wrapper (icon, status, ping)
+│   │   │   ├── WidgetRenderer.tsx# Routes widget type → component
+│   │   │   ├── ServiceStatRow.tsx# Bottom stat bar on cards
+│   │   │   ├── SettingsPanel.tsx # Slide-in settings panel
+│   │   │   ├── AddWidgetModal.tsx# Widget catalog
+│   │   │   └── widgets/          # One file per widget
 │   │   ├── config/
-│   │   │   └── servicesMeta.tsx     # Icon + brand color per integration
-│   │   ├── themes.ts         # Theme definitions + applyTheme()
-│   │   └── types.ts          # Shared TypeScript types
+│   │   │   └── servicesMeta.tsx  # Icon + brand color per integration
+│   │   ├── themes.ts             # Theme definitions + applyTheme()
+│   │   └── types.ts              # Shared TypeScript types
+│   ├── nginx.conf
 │   └── Dockerfile
 ├── pi-kiosk/
-│   ├── install.sh            # Sets up systemd kiosk service
-│   ├── kiosk.sh              # Chromium kiosk launcher script
+│   ├── install.sh                # Sets up systemd kiosk service
+│   ├── uninstall.sh              # Removes kiosk, containers, data
+│   ├── kiosk.sh                  # Chromium kiosk launcher script
 │   └── raspidash-kiosk.service
-├── data/                     # Created at runtime — holds config.json
+├── data/                         # Created at runtime — holds config.json
 └── docker-compose.yml
 ```
 
@@ -232,7 +272,6 @@ raspidash/
 ## Docker Compose Reference
 
 ```yaml
-version: '3.9'
 services:
   backend:
     build: ./backend
@@ -255,7 +294,7 @@ volumes:
   raspidash-data:
 ```
 
-To change the external port: edit `"3000:80"` → `"8080:80"` etc.
+To change the external port: edit `"7531:80"` → `"8080:80"` etc.
 
 ---
 
