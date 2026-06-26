@@ -54,7 +54,7 @@ cd raspidash
 docker compose up -d
 ```
 
-Open **http://localhost:3000** in your browser.
+Open **http://localhost:7531** in your browser.
 
 1. Click the **⚙ Settings** icon → **Integrations** → **Add integration**
 2. Pick your service type — the form adapts to show only the fields that service needs
@@ -233,7 +233,7 @@ services:
     build: ./frontend
     restart: unless-stopped
     ports:
-      - "3000:80"              # change 3000 to any port you like
+      - "7531:80"              # change 7531 to any port you like
     depends_on:
       - backend
 
