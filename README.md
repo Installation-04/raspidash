@@ -148,13 +148,13 @@ Under **Settings → General → Backup & Restore**:
 
 ```bash
 # Backend (Node.js + Express + TypeScript)
-cd backend && npm install && npm run dev   # runs on :3001
+cd backend && npm install && npm run dev   # runs on :7532
 
 # Frontend (React + Vite + Tailwind)
 cd frontend && npm install && npm run dev  # runs on :5173
 ```
 
-The frontend dev server proxies `/api/*` to `localhost:3001`.
+The frontend dev server proxies `/api/*` to `localhost:7532`.
 
 ### Project Structure
 
@@ -210,7 +210,7 @@ raspidash/
 | Variable | Default | Description |
 |---|---|---|
 | `DATA_PATH` | `/data/config.json` | Where config is persisted inside the container |
-| `PORT` | `3001` | Backend API port |
+| `PORT` | `7532` | Backend API port |
 | `RASPIDASH_URL` | `http://localhost:3000` | URL the Pi kiosk opens |
 
 ---
@@ -227,7 +227,7 @@ services:
       - raspidash-data:/data   # config.json lives here
     environment:
       - DATA_PATH=/data/config.json
-      - PORT=3001
+      - PORT=7532
 
   frontend:
     build: ./frontend

@@ -6,7 +6,7 @@ services:
       - raspidash-data:/data
     environment:
       - DATA_PATH=/data/config.json
-      - PORT=3001
+      - PORT=7532
     networks:
       - raspidash
 

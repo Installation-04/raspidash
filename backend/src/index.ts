@@ -83,7 +83,7 @@ export function broadcast(data: unknown) {
   });
 }
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 7532;
 server.listen(PORT, () => {
   console.log(`Raspidash backend running on port ${PORT}`);
   startPolling();

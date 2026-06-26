@@ -5,5 +5,5 @@ RUN npm ci
 COPY . .
 VOLUME ["/data"]
 ENV DATA_PATH=/data/config.json
-EXPOSE 3001
+EXPOSE 7532
 CMD ["npm", "run", "dev"]
