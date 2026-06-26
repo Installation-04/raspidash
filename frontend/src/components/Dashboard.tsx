@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import GridLayout, { Layout } from 'react-grid-layout';
 import { WidgetConfig, Integration, AppConfig } from '../types';
 import { WidgetShell } from './WidgetShell';
@@ -29,24 +29,38 @@ interface Props {
 }
 
 export function Dashboard({ widgets, integrations, config, editing, gap = 10, gridCols = 12, rowHeight = 80, onWidgetsChange }: Props) {
+  const [gridWidth, setGridWidth] = useState(() => window.innerWidth - 32);
+  const saveTimer = useRef<ReturnType<typeof setTimeout>>();
+
+  useEffect(() => {
+    const onResize = () => setGridWidth(window.innerWidth - 32);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
   const layout: Layout[] = widgets.map((w) => ({
     i: w.id, x: w.x, y: w.y, w: w.w, h: w.h, minW: 2, minH: 2,
   }));
 
-  const handleLayoutChange = useCallback(async (newLayout: Layout[]) => {
+  const handleLayoutChange = useCallback((newLayout: Layout[]) => {
     const updated = widgets.map((w) => {
       const l = newLayout.find((n) => n.i === w.id);
       return l ? { ...w, x: l.x, y: l.y, w: l.w, h: l.h } : w;
     });
     onWidgetsChange(updated);
-    try { await api.saveLayout(updated); } catch {}
+    clearTimeout(saveTimer.current);
+    saveTimer.current = setTimeout(() => {
+      api.saveLayout(updated).catch(console.error);
+    }, 800);
   }, [widgets, onWidgetsChange]);
 
   const handleDelete = useCallback(async (id: string) => {
     try {
       await api.deleteWidget(id);
       onWidgetsChange(widgets.filter((w) => w.id !== id));
-    } catch {}
+    } catch (e) {
+      console.error('Failed to delete widget:', e);
+    }
   }, [widgets, onWidgetsChange]);
 
   if (widgets.length === 0) {
@@ -70,7 +84,7 @@ export function Dashboard({ widgets, integrations, config, editing, gap = 10, gr
       layout={layout}
       cols={gridCols}
       rowHeight={rowHeight}
-      width={window.innerWidth - 32}
+      width={gridWidth}
       isDraggable={editing}
       isResizable={editing}
       draggableHandle=".drag-handle"
