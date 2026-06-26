@@ -20,6 +20,8 @@ type CatalogEntry = {
 
 const WIDGET_CATALOG: CatalogEntry[] = [
   { type: 'clock',                  label: 'Clock',                        desc: 'Live date and time',                                                      defaultSize: { w: 3, h: 2 } },
+  { type: 'weather',                label: 'Weather',                      desc: 'Current conditions + 5-day forecast (Open-Meteo, no API key needed)',       defaultSize: { w: 3, h: 4 } },
+  { type: 'notes',                  label: 'Notes',                        desc: 'Sticky note — write anything, auto-saved',                                  defaultSize: { w: 3, h: 3 } },
   { type: 'welcome',                label: 'Welcome',                      desc: 'Getting started card',                                                     defaultSize: { w: 4, h: 3 } },
   { type: 'system-stats',           label: 'System — Stats',               desc: 'CPU, RAM, disk, temp and uptime of the host running Raspidash',            defaultSize: { w: 4, h: 5 } },
   { type: 'system-network',         label: 'System — Network',             desc: 'All network interfaces and IP addresses of the host',                      defaultSize: { w: 4, h: 4 } },

@@ -99,6 +99,15 @@ settingsRouter.post('/widgets', (req, res) => {
   res.json(widget);
 });
 
+settingsRouter.put('/widgets/:id', (req, res) => {
+  const config = loadConfig();
+  const idx = config.widgets.findIndex((w) => w.id === req.params.id);
+  if (idx === -1) return res.status(404).json({ error: 'Not found' });
+  config.widgets[idx] = { ...config.widgets[idx], ...req.body };
+  saveConfig(config);
+  res.json(config.widgets[idx]);
+});
+
 settingsRouter.delete('/widgets/:id', (req, res) => {
   const config = loadConfig();
   config.widgets = config.widgets.filter((w) => w.id !== req.params.id);
