@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -58,8 +58,6 @@ export function loadConfig(): AppConfig {
 }
 
 export function saveConfig(config: AppConfig): void {
-  import('fs').then(({ mkdirSync }) => {
-    mkdirSync(dirname(DATA_PATH), { recursive: true });
-    writeFileSync(DATA_PATH, JSON.stringify(config, null, 2));
-  });
+  mkdirSync(dirname(DATA_PATH), { recursive: true });
+  writeFileSync(DATA_PATH, JSON.stringify(config, null, 2));
 }

@@ -5,12 +5,20 @@ type MessageHandler = (data: any) => void;
 export function useWebSocket(onMessage: MessageHandler) {
   const ws = useRef<WebSocket | null>(null);
   const handler = useRef(onMessage);
+  const retryCount = useRef(0);
+  const retryTimer = useRef<ReturnType<typeof setTimeout>>();
+  const unmounted = useRef(false);
   handler.current = onMessage;
 
   const connect = useCallback(() => {
+    if (unmounted.current) return;
     const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
     const url = `${protocol}://${window.location.host}/ws`;
     ws.current = new WebSocket(url);
+
+    ws.current.onopen = () => {
+      retryCount.current = 0;
+    };
 
     ws.current.onmessage = (e) => {
       try {
@@ -19,7 +27,12 @@ export function useWebSocket(onMessage: MessageHandler) {
     };
 
     ws.current.onclose = () => {
-      setTimeout(connect, 3000);
+      if (unmounted.current) return;
+      // Exponential backoff with jitter: base 3s, max 30s
+      const base = Math.min(3000 * 2 ** retryCount.current, 30000);
+      const delay = base + Math.random() * 3000;
+      retryCount.current += 1;
+      retryTimer.current = setTimeout(connect, delay);
     };
 
     ws.current.onerror = () => {
@@ -28,7 +41,12 @@ export function useWebSocket(onMessage: MessageHandler) {
   }, []);
 
   useEffect(() => {
+    unmounted.current = false;
     connect();
-    return () => ws.current?.close();
+    return () => {
+      unmounted.current = true;
+      clearTimeout(retryTimer.current);
+      ws.current?.close();
+    };
   }, [connect]);
 }

@@ -38,8 +38,9 @@ const app = express();
 const server = createServer(app);
 const wss = new WebSocketServer({ server });
 
-app.use(cors());
-app.use(express.json());
+const allowedOrigin = process.env.CORS_ORIGIN;
+app.use(cors(allowedOrigin ? { origin: allowedOrigin } : {}));
+app.use(express.json({ limit: '10mb' }));
 
 app.use('/api/settings', settingsRouter);
 app.use('/api/proxmox', proxmoxRouter);

@@ -33,8 +33,12 @@ settingsRouter.put('/colors', (req, res) => {
 });
 
 settingsRouter.put('/refresh', (req, res) => {
+  const interval = Number(req.body.refreshInterval);
+  if (!Number.isFinite(interval) || interval < 5 || interval > 3600) {
+    return res.status(400).json({ error: 'refreshInterval must be between 5 and 3600 seconds' });
+  }
   const config = loadConfig();
-  config.refreshInterval = req.body.refreshInterval;
+  config.refreshInterval = interval;
   saveConfig(config);
   res.json({ ok: true });
 });
