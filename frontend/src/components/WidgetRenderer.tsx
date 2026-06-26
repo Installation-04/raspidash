@@ -1,5 +1,7 @@
-import { WidgetConfig, Integration } from '../types';
+import { WidgetConfig, Integration, AppConfig } from '../types';
 import { ClockWidget } from './widgets/ClockWidget';
+import { WeatherWidget } from './widgets/WeatherWidget';
+import { NotesWidget } from './widgets/NotesWidget';
 import { WelcomeWidget } from './widgets/WelcomeWidget';
 import { ProxmoxSummaryWidget } from './widgets/ProxmoxSummaryWidget';
 import { ProxmoxVMsWidget } from './widgets/ProxmoxVMsWidget';
@@ -35,9 +37,10 @@ import { SystemStatsWidget, SystemNetworkWidget } from './widgets/SystemWidget';
 interface Props {
   widget: WidgetConfig;
   integrations: Integration[];
+  config?: AppConfig;
 }
 
-export function WidgetRenderer({ widget, integrations }: Props) {
+export function WidgetRenderer({ widget, integrations, config }: Props) {
   const integration = integrations.find((i) => i.id === widget.integrationId);
   const dt = widget.displayType;
 
@@ -77,6 +80,8 @@ export function WidgetRenderer({ widget, integrations }: Props) {
     case 'snmp-summary':           return <SNMPWidget widget={widget} />;
     case 'system-stats':           return <SystemStatsWidget />;
     case 'system-network':         return <SystemNetworkWidget />;
+    case 'weather':                return <WeatherWidget config={config} />;
+    case 'notes':                  return <NotesWidget widget={widget} />;
     default:                       return <Missing type={widget.type} />;
   }
 }

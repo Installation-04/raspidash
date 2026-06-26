@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import GridLayout, { Layout } from 'react-grid-layout';
-import { WidgetConfig, Integration } from '../types';
+import { WidgetConfig, Integration, AppConfig } from '../types';
 import { WidgetShell } from './WidgetShell';
 import { WidgetRenderer } from './WidgetRenderer';
 import { api } from '../api';
@@ -20,6 +20,7 @@ function widgetIntegrationKey(type: string, integration?: Integration): string |
 interface Props {
   widgets: WidgetConfig[];
   integrations: Integration[];
+  config?: AppConfig;
   editing: boolean;
   gap?: number;
   gridCols?: number;
@@ -27,7 +28,7 @@ interface Props {
   onWidgetsChange: (widgets: WidgetConfig[]) => void;
 }
 
-export function Dashboard({ widgets, integrations, editing, gap = 10, gridCols = 12, rowHeight = 80, onWidgetsChange }: Props) {
+export function Dashboard({ widgets, integrations, config, editing, gap = 10, gridCols = 12, rowHeight = 80, onWidgetsChange }: Props) {
   const layout: Layout[] = widgets.map((w) => ({
     i: w.id, x: w.x, y: w.y, w: w.w, h: w.h, minW: 2, minH: 2,
   }));
@@ -91,7 +92,7 @@ export function Dashboard({ widgets, integrations, editing, gap = 10, gridCols =
               editing={editing}
               onDelete={() => handleDelete(widget.id)}
             >
-              <WidgetRenderer widget={widget} integrations={integrations} />
+              <WidgetRenderer widget={widget} integrations={integrations} config={config} />
             </WidgetShell>
           </div>
         );

@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Settings, Plus, LayoutGrid, Lock } from 'lucide-react';
+import { Settings, Plus, LayoutGrid, Lock, Search } from 'lucide-react';
 import { useConfig } from './hooks/useConfig';
 import { Dashboard } from './components/Dashboard';
 import { SettingsPanel } from './components/SettingsPanel';
 import { AddWidgetModal } from './components/AddWidgetModal';
+import { Spotlight } from './components/Spotlight';
 import { WidgetConfig } from './types';
 import { applyTheme, getTheme } from './themes';
 
@@ -12,6 +13,18 @@ export default function App() {
   const [editing, setEditing] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [showAddWidget, setShowAddWidget] = useState(false);
+  const [showSpotlight, setShowSpotlight] = useState(false);
+
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        setShowSpotlight(v => !v);
+      }
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
 
   useEffect(() => {
     if (!loading) {
@@ -123,6 +136,23 @@ export default function App() {
 
         {/* Controls */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          {/* Spotlight search button */}
+          <button
+            onClick={() => setShowSpotlight(true)}
+            title="Search (Ctrl+K)"
+            style={{
+              display: 'flex', alignItems: 'center', gap: 6,
+              padding: '5px 10px', fontSize: 11, fontWeight: 500,
+              borderRadius: 6, border: 'none', cursor: 'pointer',
+              background: 'rgba(255,255,255,0.07)',
+              color: 'rgba(255,255,255,0.4)',
+              outline: '1px solid rgba(255,255,255,0.1)',
+            }}
+          >
+            <Search size={12} />
+            <span>Ctrl K</span>
+          </button>
+
           {editing && (
             <button
               onClick={() => setShowAddWidget(true)}
@@ -188,6 +218,7 @@ export default function App() {
         <Dashboard
           widgets={config.widgets}
           integrations={config.integrations}
+          config={config}
           editing={editing}
           gap={gapPx}
           gridCols={config.gridCols ?? 12}
@@ -209,6 +240,14 @@ export default function App() {
           integrations={config.integrations}
           onAdd={(widget) => setConfig({ ...config, widgets: [...config.widgets, widget] })}
           onClose={() => setShowAddWidget(false)}
+        />
+      )}
+
+      {showSpotlight && (
+        <Spotlight
+          config={config}
+          onClose={() => setShowSpotlight(false)}
+          onOpenSettings={() => setShowSettings(true)}
         />
       )}
     </div>

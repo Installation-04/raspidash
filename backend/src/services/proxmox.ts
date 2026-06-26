@@ -53,7 +53,7 @@ export async function proxmoxFetch(integrationId: string, path: string) {
   return res.json();
 }
 
-function getInsecureDispatcher() {
+async function getInsecureDispatcher() {
   // Node 18+ undici dispatcher for self-signed certs
   try {
     // @ts-ignore

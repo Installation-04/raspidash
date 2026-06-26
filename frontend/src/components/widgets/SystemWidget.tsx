@@ -22,7 +22,7 @@ function fmtBytes(bytes: number) {
 
 function Bar({ pct, color }: { pct: number; color: string }) {
   return (
-    <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)' }}>
+    <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgb(var(--color-bg-border) / 0.3)' }}>
       <div
         className="h-full rounded-full transition-all duration-700"
         style={{ width: `${Math.min(pct, 100)}%`, background: color }}
@@ -34,8 +34,8 @@ function Bar({ pct, color }: { pct: number; color: string }) {
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex justify-between items-center gap-2 text-xs py-0.5">
-      <span style={{ color: 'rgba(255,255,255,0.4)' }}>{label}</span>
-      <span className="font-mono truncate" style={{ color: 'rgba(255,255,255,0.8)' }}>{value}</span>
+      <span style={{ color: 'rgb(var(--color-text-muted))' }}>{label}</span>
+      <span className="font-mono truncate" style={{ color: 'rgb(var(--color-text))' }}>{value}</span>
     </div>
   );
 }
@@ -80,7 +80,7 @@ export function SystemStatsWidget() {
 
         {/* CPU */}
         <div>
-          <div className="flex justify-between text-xs mb-1" style={{ color: 'rgba(255,255,255,0.4)' }}>
+          <div className="flex justify-between text-xs mb-1" style={{ color: 'rgb(var(--color-text-muted))' }}>
             <span>CPU</span><span>{data.cpuUsage}%</span>
           </div>
           <Bar pct={data.cpuUsage} color={cpuColor} />
@@ -88,7 +88,7 @@ export function SystemStatsWidget() {
 
         {/* RAM */}
         <div>
-          <div className="flex justify-between text-xs mb-1" style={{ color: 'rgba(255,255,255,0.4)' }}>
+          <div className="flex justify-between text-xs mb-1" style={{ color: 'rgb(var(--color-text-muted))' }}>
             <span>RAM</span>
             <span>{fmtBytes(data.usedMem)} / {fmtBytes(data.totalMem)} ({ramPct}%)</span>
           </div>
@@ -98,7 +98,7 @@ export function SystemStatsWidget() {
         {/* Disk */}
         {data.disk && (
           <div>
-            <div className="flex justify-between text-xs mb-1" style={{ color: 'rgba(255,255,255,0.4)' }}>
+            <div className="flex justify-between text-xs mb-1" style={{ color: 'rgb(var(--color-text-muted))' }}>
               <span>Disk (/)</span>
               <span>{fmtBytes(data.disk.used)} / {fmtBytes(data.disk.total)} ({diskPct}%)</span>
             </div>
@@ -151,26 +151,26 @@ export function SystemNetworkWidget() {
         <div key={name}>
           <div
             className="text-[10px] font-semibold uppercase tracking-wider mb-1"
-            style={{ color: 'rgba(255,255,255,0.35)' }}
+            style={{ color: 'rgb(var(--color-text-muted))' }}
           >
             {name}
           </div>
           {addrs.map((a) => (
             <div key={a.family + a.address} className="flex justify-between text-xs py-0.5">
-              <span style={{ color: 'rgba(255,255,255,0.4)' }}>{a.family}</span>
-              <span className="font-mono" style={{ color: 'rgba(255,255,255,0.85)' }}>{a.address}</span>
+              <span style={{ color: 'rgb(var(--color-text-muted))' }}>{a.family}</span>
+              <span className="font-mono" style={{ color: 'rgb(var(--color-text))' }}>{a.address}</span>
             </div>
           ))}
           <div className="flex justify-between text-xs py-0.5">
-            <span style={{ color: 'rgba(255,255,255,0.4)' }}>MAC</span>
-            <span className="font-mono text-[10px]" style={{ color: 'rgba(255,255,255,0.5)' }}>
+            <span style={{ color: 'rgb(var(--color-text-muted))' }}>MAC</span>
+            <span className="font-mono text-[10px]" style={{ color: 'rgb(var(--color-text-muted))' }}>
               {addrs[0]?.mac}
             </span>
           </div>
         </div>
       ))}
       {ifaces.length === 0 && (
-        <div className="text-xs text-center" style={{ color: 'rgba(255,255,255,0.3)' }}>
+        <div className="text-xs text-center" style={{ color: 'rgb(var(--color-text-muted))' }}>
           No external interfaces found
         </div>
       )}

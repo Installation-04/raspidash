@@ -63,6 +63,8 @@ export type WidgetType =
   | 'snmp-summary'
   | 'system-stats'
   | 'system-network'
+  | 'weather'
+  | 'notes'
   | 'clock'
   | 'welcome';
 
