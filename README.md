@@ -14,13 +14,16 @@ A self-hosted, Docker-based homelab dashboard built for Raspberry Pi with a conn
 - **27 integrations** — from Proxmox and TrueNAS to Sonarr, Plex, SNMP devices and more
 - **Host system widgets** — CPU, RAM, disk, temperature, uptime and network interfaces of the Raspidash host
 - **Live WebSocket updates** — push + configurable polling interval
-- **11 themes** — Dark, Synthwave, Midnight, Dracula, Catppuccin, Nord, Tokyo Night, Gruvbox, AMOLED, Solarized, Light
+- **14 themes** — Dark, Synthwave, Cyberpunk, Halo, Matrix, Midnight, Dracula, Catppuccin, Nord, Tokyo Night, Gruvbox, AMOLED, Solarized, Light
 - **Pi Display Presets** — one-click optimize for 7", 10", HyperPixel, rack screens, and more
 - **Background images** — paste any image URL as a wallpaper with adjustable overlay
 - **Glassmorphism cards** — tunable blur, opacity, radius, gap
 - **Backup & Restore** — download/upload your full config as JSON
 - **Kiosk mode** — boots straight to dashboard on Pi startup
 - **One-line installer** — installs Docker, clones repo, starts stack and kiosk automatically
+- **Weather widget** — current conditions + 5-day forecast via Open-Meteo (no API key needed)
+- **Notes widget** — sticky note auto-saved to config
+- **Ctrl+K spotlight** — search integrations by name and open them instantly
 
 ---
 
@@ -44,6 +47,7 @@ A self-hosted, Docker-based homelab dashboard built for Raspberry Pi with a conn
 | **Cloud** | Nextcloud |
 | **System** | Cockpit |
 | **Host** | System Stats (CPU/RAM/disk/temp), System Network (interfaces & IPs) |
+| **Utilities** | Weather (Open-Meteo, no API key), Notes (sticky note) |
 
 ---
 
@@ -183,6 +187,9 @@ Under **Settings → General → Backup & Restore**:
 |---|---|
 | Dark | Deep navy — default |
 | Synthwave | Retro 80s neon: magenta, cyan, electric purple |
+| Cyberpunk | Neon yellow & electric blue on near-black |
+| Halo | Military olive-green, UNSC inspired |
+| Matrix | Green-on-black monochrome |
 | Midnight | Near-black with violet accent |
 | AMOLED | Pure black for OLED screens |
 | Dracula | Classic purple/pink |
