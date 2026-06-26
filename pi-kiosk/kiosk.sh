@@ -2,7 +2,7 @@
 # Raspidash kiosk launcher — runs on Pi boot via systemd
 # Waits for the dashboard to be reachable, then opens Chromium in kiosk mode.
 
-DASHBOARD_URL="${RASPIDASH_URL:-http://localhost:3000}"
+DASHBOARD_URL="${RASPIDASH_URL:-http://localhost:7531}"
 DISPLAY="${DISPLAY:-:0}"
 
 # Hide cursor
