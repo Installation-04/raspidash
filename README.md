@@ -211,7 +211,7 @@ raspidash/
 |---|---|---|
 | `DATA_PATH` | `/data/config.json` | Where config is persisted inside the container |
 | `PORT` | `7532` | Backend API port |
-| `RASPIDASH_URL` | `http://localhost:3000` | URL the Pi kiosk opens |
+| `RASPIDASH_URL` | `http://localhost:7531` | URL the Pi kiosk opens |
 
 ---
 
