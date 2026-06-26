@@ -46,7 +46,21 @@ A self-hosted, Docker-based homelab dashboard built for Raspberry Pi with a conn
 
 ---
 
-## Quick Start (Docker)
+## Quick Start
+
+### One-line install (recommended for Raspberry Pi)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Installation-04/raspidash/main/install.sh | bash
+```
+
+The script will:
+- Install Docker if not present
+- Clone the repo
+- Build and start the Docker stack
+- Optionally set up the Pi kiosk (auto-launch Chromium on boot)
+
+### Manual install
 
 ```bash
 git clone https://github.com/Installation-04/raspidash.git
