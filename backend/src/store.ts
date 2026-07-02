@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync, renameSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -59,5 +59,8 @@ export function loadConfig(): AppConfig {
 
 export function saveConfig(config: AppConfig): void {
   mkdirSync(dirname(DATA_PATH), { recursive: true });
-  writeFileSync(DATA_PATH, JSON.stringify(config, null, 2));
+  // Write-then-rename so a crash or power loss mid-write can't corrupt the config
+  const tmpPath = `${DATA_PATH}.tmp`;
+  writeFileSync(tmpPath, JSON.stringify(config, null, 2));
+  renameSync(tmpPath, DATA_PATH);
 }

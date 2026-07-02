@@ -1,5 +1,7 @@
 import { loadConfig } from '../store.js';
 
+const FETCH_TIMEOUT_MS = 10_000;
+
 export function makeApiKeyFetcher(bearerPrefix = 'Bearer') {
   return async function fetch_(integrationId: string, path: string) {
     const config = loadConfig();
@@ -8,7 +10,7 @@ export function makeApiKeyFetcher(bearerPrefix = 'Bearer') {
     const base = integration.url.replace(/\/$/, '');
     const headers: Record<string, string> = { 'Content-Type': 'application/json' };
     if (integration.apiKey) headers['Authorization'] = `${bearerPrefix} ${integration.apiKey}`;
-    const res = await fetch(`${base}${path}`, { headers });
+    const res = await fetch(`${base}${path}`, { headers, signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) });
     if (!res.ok) throw new Error(`API error ${res.status}`);
     return res.json();
   };
@@ -24,7 +26,7 @@ export function makeUserPassFetcher() {
     if (integration.username && integration.password) {
       headers['Authorization'] = 'Basic ' + Buffer.from(`${integration.username}:${integration.password}`).toString('base64');
     }
-    const res = await fetch(`${base}${path}`, { headers, ...opts });
+    const res = await fetch(`${base}${path}`, { headers, signal: AbortSignal.timeout(FETCH_TIMEOUT_MS), ...opts });
     if (!res.ok) throw new Error(`API error ${res.status}`);
     return res.json();
   };
