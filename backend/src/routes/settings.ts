@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { loadConfig, saveConfig } from '../store.js';
+import { GENERAL_SETTING_KEYS, sanitizeRestorePayload, validateRefreshInterval } from '../validation.js';
 import { randomUUID } from 'crypto';
 
 export const settingsRouter = Router();
@@ -12,10 +13,6 @@ settingsRouter.get('/', (_req, res) => {
     integrations: config.integrations.map(({ password: _p, apiKey: _k, ...rest }) => rest),
   };
   res.json(safe);
-});
-
-settingsRouter.get('/full', (_req, res) => {
-  res.json(loadConfig());
 });
 
 settingsRouter.put('/theme', (req, res) => {
@@ -33,25 +30,19 @@ settingsRouter.put('/colors', (req, res) => {
 });
 
 settingsRouter.put('/refresh', (req, res) => {
+  const interval = validateRefreshInterval(req.body.refreshInterval);
+  if (interval === null) {
+    return res.status(400).json({ error: 'refreshInterval must be between 5 and 3600 seconds' });
+  }
   const config = loadConfig();
-  config.refreshInterval = req.body.refreshInterval;
+  config.refreshInterval = interval;
   saveConfig(config);
   res.json({ ok: true });
 });
 
 settingsRouter.put('/general', (req, res) => {
   const config = loadConfig();
-  const allowed = [
-    'dashboardTitle', 'temperatureUnit', 'dateFormat', 'timeFormat',
-    'language', 'timezone', 'widgetBorderRadius', 'widgetGap',
-    'showWidgetTitles', 'showLastUpdated', 'animationsEnabled',
-    'glassmorphismIntensity', 'compactMode', 'startupWidget',
-    'backgroundStyle', 'fontFamily',
-    'screenPreset', 'gridCols', 'rowHeight', 'uiScale', 'touchMode',
-    'overscanCompensation', 'hideScrollbars', 'highContrast', 'cursorHidden',
-    'backgroundImage', 'backgroundOverlayOpacity',
-  ];
-  for (const key of allowed) {
+  for (const key of GENERAL_SETTING_KEYS) {
     if (req.body[key] !== undefined) (config as any)[key] = req.body[key];
   }
   saveConfig(config);
@@ -59,6 +50,9 @@ settingsRouter.put('/general', (req, res) => {
 });
 
 settingsRouter.put('/layout', (req, res) => {
+  if (!Array.isArray(req.body.widgets)) {
+    return res.status(400).json({ error: 'widgets must be an array' });
+  }
   const config = loadConfig();
   config.widgets = req.body.widgets;
   saveConfig(config);
@@ -126,10 +120,10 @@ settingsRouter.get('/backup', (_req, res) => {
 
 // Restore — replace entire config from uploaded JSON
 settingsRouter.post('/restore', (req, res) => {
-  const body = req.body;
-  if (!body || typeof body !== 'object' || !Array.isArray(body.integrations) || !Array.isArray(body.widgets)) {
-    return res.status(400).json({ error: 'Invalid backup file — missing integrations or widgets arrays' });
+  const clean = sanitizeRestorePayload(req.body);
+  if (!clean) {
+    return res.status(400).json({ error: 'Invalid backup file — missing or malformed integrations/widgets' });
   }
-  saveConfig(body);
-  res.json({ ok: true, integrations: body.integrations.length, widgets: body.widgets.length });
+  saveConfig(clean);
+  res.json({ ok: true, integrations: clean.integrations.length, widgets: clean.widgets.length });
 });
